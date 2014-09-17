@@ -71,5 +71,15 @@ Currently only the member find, and contact find are working.
 
 ### Adding support for other Connectwise Classes
 
-There is a Model Module that incorporates the core of what it is to be
+There is a `Connectwise::Model` module that incorporates the core of what it is to be
 connectwise model. Every Model should include this class.
+
+Then it's a matter of figuring out the following for each class:
+- What fields are returned from a find call
+- What fields are returned from a create call (sometimes this differs from the find call)
+- Adding these fields to the attr_accessible list to define what parameters are valid
+- Handling the basic CRUD operations by using the connection object
+
+Some issues that need to be resolved:
+- How best to handle nested data structures (A contact has an email address list, a phone number list, etc.)
+- How best to handle nested objects (A company has a contact)
