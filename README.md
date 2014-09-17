@@ -21,10 +21,10 @@ Or install it yourself as:
 Sample Usage:
 
 ### Using the low level connection object directly
-
-   conn = Connectwise::Connection.new host: 'host.domain.com', company\_name: 'company', integrator\_login\_id: 'username', integrator\_password: 'password'
-   conn.call :contact, :find\_contacts, conditions: 'EmailAddress like "test@test.com"'
-
+```ruby
+conn = Connectwise::Connection.new host: 'host.domain.com', company_name: 'company', integrator_login_id: 'username', integrator_password: 'password'
+conn.call :contact, :find_contacts, conditions: 'EmailAddress like "test@test.com"'
+```
 The first parameter in the call method is the api
 
 ## Current progress and TODOs
