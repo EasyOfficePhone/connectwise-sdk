@@ -23,6 +23,9 @@ conn = Connectwise::Connection.new host: 'host.domain.com', company_name: 'compa
 contact = Connectwise::Contact.new(conn, first_name: 'Malcom', last_name: 'Reynolds', email: 'captain@serenity.com')
 contact.save  # => creates a new contact and updates itself with the fields set by connectwise
 contact.id    # => 432
+
+# Retrieve a list of members
+member = Connectwise::Member.where(conn, email_address: 'captain@serenity.com')
 ```
 
 ### Using the low level connection object directly
@@ -53,7 +56,7 @@ Note how `contact` is lower case, while `FirstName` and the other fields are cam
 
 ## Current progress and TODOs
 
-Currently only the member find, and contact find are working.
+Currently only the `Member.where` method, and the low level `Connection.call` method are working.
 
 1. Complete Contact class
 2. Company class
