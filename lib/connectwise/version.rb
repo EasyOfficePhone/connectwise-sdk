@@ -1,3 +1,3 @@
-module ConnectwiseSdk
+module Connectwise
   VERSION = "0.0.1"
 end

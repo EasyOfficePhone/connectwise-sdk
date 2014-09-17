@@ -7,14 +7,14 @@ module Connectwise
 
     def self.where(connection, **attrs)
       resp = connection.call :contact, :find_contacts, {conditions: attrs_to_query(attrs)}
-      Array(resp[:contact_find_result]).map {|attrs| cw_find_to_model(connection, attrs) }
+      Array(resp[:contact_find_result]).map {|attrs| p attrs; cw_find_to_model(connection, attrs) }
     end
 
     def save
       #message = message.merge(CompanyId: company_id) if company_id
       attrs = connection.call 'ContactApi', :add_or_update_contact, {contact: to_cw_h}
       p attrs
-      self.class.cw_to_model(connection, attrs)
+      self.class.cw_save_to_model(connection, attrs)
     end
 
     def destroy
