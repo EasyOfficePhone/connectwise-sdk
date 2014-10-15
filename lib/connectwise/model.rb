@@ -1,12 +1,70 @@
 module Connectwise
   module Model
     module ClassMethods
+      def where(connection, **attrs)
+        conditions = attrs ? attrs_to_query(transform(attrs)) : args.join(' ')
+        resp = connection.call cw_api_name, "find_#{plural_class_name}".to_sym, {conditions: conditions}
+        resp ? Array(resp[cw_find_root_node_name]).map {|attrs| self.new(connection, find_transform(attrs)) } : []
+      end
+
+      def find(connection, id)
+        if (attrs = connection.call(cw_api_name, "get_#{cw_api_name}".to_sym, {id: id}))
+          self.new(connection, find_transform(attrs))
+        else
+          fail RecordNotFound
+        end
+      rescue ConnectionError
+        raise RecordNotFound
+      end
+
+      def plural(plural)
+        @plural_form = plural
+      end
+
+      def find_root_node(root_node)
+        @find_root_node = root_node.to_sym
+      end
+
       def attrs_to_query(attrs)
         attrs.map do |k,v|
           str = k.to_s
           str.extend(Connectwise::Extensions::String)
           "#{str.camelize} like '#{v}'"
         end.join(' and ')
+      end
+
+      def cw_api_name
+        base_class_name.downcase.to_sym
+      end
+
+      def plural_class_name
+        ending = base_class_name[/[aeiou]$/] ? 'es' : 's'
+        @plural_form ||= "#{base_class_name.downcase}#{ending}"
+      end
+
+      def cw_find_root_node_name
+        @find_root_node ||= "#{cw_api_name}_find_result".to_sym
+      end
+
+      def find_transform(attrs)
+        attrs
+      end
+
+      def save_transform(attrs)
+        attrs
+      end
+
+      def transform(attrs)
+        attrs
+      end
+
+      def model_name(model_name = self.name)
+        @model_name ||= model_name
+      end
+
+      private
+      def base_class_name
+        model_name.split('::').last
       end
     end
 
@@ -16,13 +74,23 @@ module Connectwise
 
     def initialize(connection, **attributes)
       @connection = connection
-      attributes.each do |attr, value|
-        public_send "#{attr}=", value
+      self.class.transform(attributes).each do |attr, value|
+        public_send("#{attr}=", value) if respond_to?("#{attr}=")
       end
     end
 
+    def save
+      attrs = connection.call self.class.cw_api_name, "add_or_update_#{self.class.cw_api_name}".to_sym, {self.class.cw_api_name => to_cw_h}
+      self.class.new(connection, self.class.save_transform(attrs))
+    end
+
+    def destroy
+      connection.call self.class.cw_api_name, "delete_#{self.class.cw_api_name}".to_sym, {id: id}
+      self
+    end
+
     def persisted?
-      false
+      !!id
     end
 
     def to_h
@@ -37,6 +105,7 @@ module Connectwise
       instance_vars = instance_variables.map {|name| name.to_s.gsub(/@/, '').to_sym}
       public_methods.select{|method| instance_vars.include?(method) }
     end
+
     protected
     def connection
       @connection

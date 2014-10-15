@@ -1,9 +1,4 @@
 module Connectwise
-  class ConnectionError < StandardError; end
-  class UnknownHostError < ConnectionError; end
-  class UnknownCompanyError < ConnectionError; end
-  class BadCredentialsError < ConnectionError; end
-
   class Connection
     attr_reader :host, :custom_api_mapping
     attr_accessor :log
@@ -12,6 +7,7 @@ module Connectwise
       @custom_api_mapping = custom_api_mapping
       @host = host
       @credentials = {CompanyId: company_name, IntegratorLoginId: integrator_login_id, IntegratorPassword: integrator_password}
+      HTTPI.adapter = :net_http
     end
 
     def call(api, action, message, options: {}, &err_handler)
