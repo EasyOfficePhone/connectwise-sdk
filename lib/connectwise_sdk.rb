@@ -1,7 +1,7 @@
 require 'savon'
 require "connectwise/version"
 require 'connectwise/extensions'
-require 'connectwise/errors'
+require 'connectwise/errs'
 require 'connectwise/connection'
 require 'connectwise/model'
 require 'connectwise/member'
