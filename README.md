@@ -61,6 +61,7 @@ Note how `contact` is lower case, while `FirstName` and the other fields are cam
 Currently the low level `Connection.call` method is working, as well as basic Member, Contact, Company, and Opportunity creation, and search.
 
 Remaining items include:
+
 1. Ticket class
 2. Support Notes for Opportunities (submitting them)
 2. Creating a Facade layer so that the connection object doesn't need to be passed to each object
