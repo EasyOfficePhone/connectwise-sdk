@@ -10,6 +10,7 @@ describe Connectwise::Company do
     new_company = subject.save
     expect(new_company.persisted?).to eq true
     expect(new_company.id).not_to be_empty
+    expect(new_company.status).to eq 'Active'
   end
 
   it 'fails to create a company' do

@@ -1,10 +1,10 @@
 module Connectwise
   module Model
     module ClassMethods
-      def where(connection, **attrs)
+      def where(connection, *args, **attrs)
         conditions = attrs ? attrs_to_query(transform(attrs)) : args.join(' ')
         resp = connection.call cw_api_name, "find_#{plural_class_name}".to_sym, {conditions: conditions}
-        resp ? Array(resp[cw_find_root_node_name]).map {|attrs| self.new(connection, find_transform(attrs)) } : []
+        resp ? Array(remove_root_node(resp)).map {|attrs| self.new(connection, find_transform(attrs)) } : []
       end
 
       def find(connection, id)
@@ -19,10 +19,6 @@ module Connectwise
 
       def plural(plural)
         @plural_form = plural
-      end
-
-      def find_root_node(root_node)
-        @find_root_node = root_node.to_sym
       end
 
       def attrs_to_query(attrs)
@@ -40,10 +36,6 @@ module Connectwise
       def plural_class_name
         ending = base_class_name[/[aeiou]$/] ? 'es' : 's'
         @plural_form ||= "#{base_class_name.downcase}#{ending}"
-      end
-
-      def cw_find_root_node_name
-        @find_root_node ||= "#{cw_api_name}_find_result".to_sym
       end
 
       def find_transform(attrs)
@@ -65,6 +57,10 @@ module Connectwise
       private
       def base_class_name
         model_name.split('::').last
+      end
+
+      def remove_root_node(resp)
+        resp.values.first
       end
     end
 

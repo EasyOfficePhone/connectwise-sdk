@@ -2,7 +2,6 @@ module Connectwise
   class Opportunity
     include Model
     plural :opportunities
-    find_root_node :opportunity_list_item
 
     attr_accessor :id, :opportunity_name, :source, :rating, :stage_name, :type, :status, :closed, :won, :lost, :close_probablity, :expected_close_date, :primary_sales_rep, :secondary_sales_rep,
       :marketing_campaign_name, :location, :business_unit, :age, :estimated_total, :recurring_total, :won_amount, :lost_amount, :open_amount, :margin, :product_amount, :service_amount

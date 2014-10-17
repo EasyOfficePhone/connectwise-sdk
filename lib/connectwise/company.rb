@@ -14,9 +14,9 @@ module Connectwise
     def initialize(connection, attrs)
       super
       @company_id ||= SecureRandom.hex(12)
+      @status ||= 'Active'
     end
 
-    private
     def to_cw_h
       attrs = super
       attrs['CompanyID'] = attrs.delete('CompanyId')

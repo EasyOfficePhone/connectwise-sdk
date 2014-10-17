@@ -5,6 +5,7 @@ module Connectwise
 
     def self.find_transform(attrs)
       attrs[:id] = attrs.delete(:member_id)
+      attrs
     end
   end
 end
