@@ -11,4 +11,10 @@ describe Connectwise::Member do
     expect(response.first.class).to eq Connectwise::Member
     expect(response.first.email_address).to eq 'test@test.com'
   end
+
+  it 'finds multiple members using string syntax' do
+    response = subject.where(conn, "MemberID='admin1' or MemberID='admin2'")
+    expect(response.count).to eq 2
+    expect(response.first.class).to eq Connectwise::Member
+  end
 end

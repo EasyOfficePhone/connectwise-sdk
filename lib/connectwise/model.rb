@@ -2,7 +2,7 @@ module Connectwise
   module Model
     module ClassMethods
       def where(connection, *args, **attrs)
-        conditions = attrs ? attrs_to_query(transform(attrs)) : args.join(' ')
+        conditions = attrs.empty? ? args.join(' ') : attrs_to_query(transform(attrs))
         resp = connection.call cw_api_name, "find_#{plural_class_name}".to_sym, {conditions: conditions}
         resp ? Array(remove_root_node(resp)).map {|attrs| self.new(connection, find_transform(attrs)) } : []
       end
