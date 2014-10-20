@@ -4,7 +4,9 @@ module Connectwise
       def where(connection, *args, **attrs)
         conditions = attrs.empty? ? args.join(' ') : attrs_to_query(transform(attrs))
         resp = connection.call cw_api_name, "find_#{plural_class_name}".to_sym, {conditions: conditions}
-        resp ? Array(remove_root_node(resp)).map {|attrs| self.new(connection, find_transform(attrs)) } : []
+        resp = resp.nil? ? [] : remove_root_node(resp)
+        resp = resp.respond_to?(:to_ary) ? resp : [resp]
+        resp.map {|attrs| self.new(connection, find_transform(attrs)) }
       end
 
       def find(connection, id)

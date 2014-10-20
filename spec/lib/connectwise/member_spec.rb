@@ -17,4 +17,10 @@ describe Connectwise::Member do
     expect(response.count).to eq 2
     expect(response.first.class).to eq Connectwise::Member
   end
+
+  it 'finds a single member using string syntax' do
+    response = subject.where(conn, "MemberID='admin1'")
+    expect(response.count).to eq 1
+    expect(response.first.class).to eq Connectwise::Member
+  end
 end
