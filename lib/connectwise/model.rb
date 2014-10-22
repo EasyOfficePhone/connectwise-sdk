@@ -2,11 +2,9 @@ module Connectwise
   module Model
     module ClassMethods
       def where(connection, *args, **attrs)
-        conditions = attrs.empty? ? args.join(' ') : attrs_to_query(transform(attrs))
+        conditions = attrs.empty? ? args.join(' ') : attrs_to_query(where_transform(attrs))
         resp = connection.call cw_api_name, "find_#{plural_class_name}".to_sym, {conditions: conditions}
-        resp = resp.nil? ? [] : remove_root_node(resp)
-        resp = resp.respond_to?(:to_ary) ? resp : [resp]
-        resp.map {|attrs| self.new(connection, find_transform(attrs)) }
+        normalize_find_response(resp).map {|attrs| self.new(connection, find_transform(attrs)) }
       end
 
       def find(connection, id)
@@ -40,6 +38,10 @@ module Connectwise
         @plural_form ||= "#{base_class_name.downcase}#{ending}"
       end
 
+      def where_transform(attrs)
+        attrs
+      end
+
       def find_transform(attrs)
         attrs
       end
@@ -63,6 +65,11 @@ module Connectwise
 
       def remove_root_node(resp)
         resp.values.first
+      end
+
+      def normalize_find_response(resp)
+        resp = resp.nil? ? [] : remove_root_node(resp)
+        resp.respond_to?(:to_ary) ? resp : [resp]
       end
     end
 

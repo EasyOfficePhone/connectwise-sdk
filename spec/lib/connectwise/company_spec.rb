@@ -25,13 +25,20 @@ describe Connectwise::Company do
     expect(instance).to eq new_company
   end
 
+  it 'deletes a company based on where data' do
+    new_company = subject.save
+    company = Connectwise::Company.where(conn, company_id: new_company.company_id)
+    instance = company.first.destroy
+    expect {Connectwise::Company.find(conn, instance.id) }.to raise_error Connectwise::RecordNotFound
+  end
+
   it 'finds a company with search' do
     subject.save
     resp = Connectwise::Company.where(conn, company_name: 'Blue Sun')
     expect(resp).not_to be_empty
   end
 
-  it 'finds a company with id', focus:true do
+  it 'finds a company with id' do
     new_company = subject.save
     resp = Connectwise::Company.find(conn, new_company.id)
     expect(resp).not_to be_nil

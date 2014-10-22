@@ -7,7 +7,7 @@ module Connectwise
     #TODO - The use of SrServiceRecid and TicketNumber instead of id - may want to configure these
     # but this is so inconsistent for tickets that it may not be worth it unless other calls do the same thing
     def self.find(connection, id)
-      if (attrs = connection.call(cw_api_name, "get_#{cw_api_name}".to_sym, {SrServiceRecid: id}))
+      if (attrs = connection.call(cw_api_name, "get_#{cw_api_name}".to_sym, {ticketNumber: id}))
         self.new(connection, find_transform(attrs))
       else
         fail RecordNotFound
@@ -32,11 +32,16 @@ module Connectwise
     end
 
     def destroy
-      connection.call self.class.cw_api_name, "delete_#{self.class.cw_api_name}".to_sym, {SrServiceRecid: id}
+      connection.call self.class.cw_api_name, "delete_#{self.class.cw_api_name}".to_sym, {ticketNumber: id}
       self
     end
 
     private
+    def self.find_transform(attrs)
+      attrs[:id] = attrs.delete(:ticket_number)
+      attrs
+    end
+
     def self.save_transform(attrs)
       attrs[:id] = attrs.delete(:ticket_number)
       attrs

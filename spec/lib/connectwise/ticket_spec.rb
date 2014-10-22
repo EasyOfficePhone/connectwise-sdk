@@ -31,7 +31,6 @@ describe Connectwise::Ticket do
   it 'finds a ticket with id' do
     subject.company = company.save
     new_ticket = subject.save
-    p new_ticket.id
     resp = Connectwise::Ticket.find(conn, new_ticket.id)
     expect(resp).not_to be_nil
     expect(resp.id).to eq new_ticket.id
@@ -46,9 +45,8 @@ describe Connectwise::Ticket do
     new_ticket = subject.save
     found_ticket = Connectwise::Ticket.find(conn, new_ticket.id)
     expect(found_ticket).not_to be_nil
-    deleted_ticket = found_tickets.first.destroy
+    deleted_ticket = found_ticket.destroy
     expect(deleted_ticket).not_to be_nil
-    found_ticket = Connectwise::ticket.find(conn, new_ticket.id)
-    expect(found_ticket).to be_nil
+    expect {Connectwise::Ticket.find(conn, new_ticket.id)}.to raise_error Connectwise::RecordNotFound
   end
 end

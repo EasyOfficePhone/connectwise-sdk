@@ -34,5 +34,11 @@ module Connectwise
       attrs[:opportunity_name] = name if name
       attrs
     end
+
+    def self.where_transform(attrs)
+      name = attrs.delete(:name) || attrs.delete(:opportunity_name)
+      attrs[:opportunity_name] = name if name
+      attrs
+    end
   end
 end
