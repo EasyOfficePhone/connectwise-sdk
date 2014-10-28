@@ -8,7 +8,7 @@ module Connectwise
       end
 
       def find(connection, id)
-        if (attrs = connection.call(cw_api_name, "get_#{cw_api_name}".to_sym, {id: id}))
+        if (attrs = connection.call(cw_api_name, "get_#{cw_model_name}".to_sym, {id: id}))
           self.new(connection, find_transform(attrs))
         else
           fail RecordNotFound
@@ -30,6 +30,10 @@ module Connectwise
       end
 
       def cw_api_name
+        base_class_name.downcase.to_sym
+      end
+
+      def cw_model_name
         base_class_name.downcase.to_sym
       end
 
@@ -85,12 +89,12 @@ module Connectwise
     end
 
     def save
-      attrs = connection.call self.class.cw_api_name, "add_or_update_#{self.class.cw_api_name}".to_sym, {self.class.cw_api_name => to_cw_h}
+      attrs = connection.call self.class.cw_api_name, "add_or_update_#{self.class.cw_model_name}".to_sym, {self.class.cw_model_name => to_cw_h}
       self.class.new(connection, self.class.save_transform(attrs))
     end
 
     def destroy
-      connection.call self.class.cw_api_name, "delete_#{self.class.cw_api_name}".to_sym, {id: id}
+      connection.call self.class.cw_api_name, "delete_#{self.class.cw_model_name}".to_sym, {id: id}
       self
     end
 

@@ -39,7 +39,7 @@ conn = Connectwise::Connection.new host: 'host.domain.com', company_name: 'compa
 conn.call :contact, :find_contacts, conditions: 'EmailAddress like "test@test.com"'
 ```
 
- - The first parameter is the api you wish to use.  In this case the `contactApi`.  
+ - The first parameter is the api you wish to use.  In this case the `contactApi`.
  - The second parameter is the specific api call you wish to use (from the Connectwise Api documentation)
  - The third paramater is the data you wish to send the api
 
@@ -62,8 +62,7 @@ Currently the low level `Connection.call` method is working, as well as basic Me
 
 Remaining items include:
 
-1. Ticket class
-2. Support Notes for Opportunities (submitting them)
+1. Support Notes for Opportunities (submitting them)
 2. Creating a Facade layer so that the connection object doesn't need to be passed to each object
 3. Supporting a late binding way of accessing internal objects (accessing the company object within an opportunity for example)
 4. Supporting an intuitive way of accessing lists of phone numbers, addresses, and email addresses, while still allowing simple access to the first one of each.

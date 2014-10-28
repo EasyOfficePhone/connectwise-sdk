@@ -49,4 +49,20 @@ describe Connectwise::Ticket do
     expect(deleted_ticket).not_to be_nil
     expect {Connectwise::Ticket.find(conn, new_ticket.id)}.to raise_error Connectwise::RecordNotFound
   end
+
+  it 'adds a note to the ticket' do
+    subject.company = company.save
+    new_ticket = subject.save
+    ticket_note = new_ticket.add_note('Message of some kind')
+    expect(ticket_note.persisted?).to eq true
+    expect(ticket_note.external?).to eq true
+  end
+
+  it 'adds an internal note to the ticket' do
+    subject.company = company.save
+    new_ticket = subject.save
+    ticket_note = new_ticket.add_note('Message of some kind', type: :internal)
+    expect(ticket_note.persisted?).to eq true
+    expect(ticket_note.internal?).to eq true
+  end
 end
