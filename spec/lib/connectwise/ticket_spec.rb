@@ -19,6 +19,7 @@ describe Connectwise::Ticket do
     new_ticket = subject.save
     resp = Connectwise::Ticket.where(conn, summary: 'Help me')
     expect(resp).not_to be_empty
+    expect(resp.first.persisted?).to eq true
   end
 
   it 'finds no ticket' do

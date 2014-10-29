@@ -39,7 +39,7 @@ module Connectwise
 
     private
     def self.find_transform(attrs)
-      attrs[:id] = attrs.delete(:ticket_number)
+      attrs[:id] = attrs.delete(:ticket_number) || attrs.delete(:sr_service_rec_id)
       attrs
     end
 
