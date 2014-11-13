@@ -9,9 +9,11 @@ describe Connectwise::Ticket do
   subject {Connectwise::Ticket.new(conn, ticket_attrs)}
 
   it 'creates a ticket' do
-    subject.company = company.save
+    orig_company = company.save
+    subject.company = orig_company
     new_ticket = subject.save
     expect(new_ticket.persisted?).to eq true
+    expect(new_ticket.company_id).to eq orig_company.company_id
   end
 
   it 'finds a service ticket' do
