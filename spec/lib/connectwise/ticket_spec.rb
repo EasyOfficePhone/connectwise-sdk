@@ -14,6 +14,8 @@ describe Connectwise::Ticket do
     new_ticket = subject.save
     expect(new_ticket.persisted?).to eq true
     expect(new_ticket.company_id).to eq orig_company.company_id
+    expect(new_ticket.closed_flag).to eq false
+    #expect(new_ticket.member_id).to eq ''
   end
 
   it 'finds a service ticket' do
@@ -67,5 +69,20 @@ describe Connectwise::Ticket do
     ticket_note = new_ticket.add_note('Message of some kind', type: :internal)
     expect(ticket_note.persisted?).to eq true
     expect(ticket_note.internal?).to eq true
+  end
+
+  it 'parses a post callback' do
+    entity = {'Summary' => 'A summary', 'ClosedFlag' => false, 'Severity' => 'High', 'CompanyId' => 'acompany Id', 'memberId' => 'Admin1'}
+    cw_params = {'Other data' => 'not sure what', 'Entity' => entity.to_json}
+    params = {
+      cw_params.to_json => nil,
+      id: 12
+    }
+    ticket = Connectwise::Ticket.parse(conn, params)
+    expect(ticket.summary).to eq entity['Summary']
+    expect(ticket.closed_flag).to eq entity['ClosedFlag']
+    expect(ticket.severity).to eq entity['Severity']
+    expect(ticket.company_id).to eq entity['CompanyId']
+    expect(ticket.member_id).to eq entity['memberId']
   end
 end
