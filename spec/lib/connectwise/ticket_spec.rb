@@ -86,7 +86,7 @@ describe Connectwise::Ticket do
     expect(ticket.member_id).to eq entity['memberId']
   end
 
-  it 'allows access to the notes contained within it',focus:true do
+  it 'allows access to the notes contained within it' do
     subject.company = company.save
     new_ticket = subject.save
     new_ticket.add_note('this api sucks')
@@ -94,7 +94,7 @@ describe Connectwise::Ticket do
     expect(resp.notes).to be_kind_of(Array)
   end
 
-  it 'allows access to the note contained within it',focus:true do
+  it 'allows access to the note contained within it' do
     subject.company = company.save
     new_ticket = subject.save
     resp = Connectwise::Ticket.find(conn, new_ticket.id)
