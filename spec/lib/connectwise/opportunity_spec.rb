@@ -7,9 +7,9 @@ describe Connectwise::Opportunity do
   let(:contact_attrs) { {first_name: 'Malcom', last_name: 'Reynolds'} }
   let(:opp_attrs) { {name: 'Something', source: 'EOP', primary_sales_rep: 'Admin1'} }
   let(:full_op) {
-    new_company = Connectwise::Company.new(conn, company_attrs).save
-    new_contact = Connectwise::Contact.new(conn, contact_attrs.merge(company: new_company)).save
-    Connectwise::Opportunity.new(conn, opp_attrs.merge(company: new_company, contact: new_contact)).save
+    @new_company = Connectwise::Company.new(conn, company_attrs).save
+    @new_contact = Connectwise::Contact.new(conn, contact_attrs.merge(company: @new_company)).save
+    Connectwise::Opportunity.new(conn, opp_attrs.merge(company: @new_company, contact: @new_contact)).save
   }
   subject {Connectwise::Opportunity}
 
@@ -35,6 +35,15 @@ describe Connectwise::Opportunity do
     new_opp = full_op
     found_opp = Connectwise::Opportunity.find(conn, new_opp.id)
     expect(found_opp.id).not_to be_nil
+    expect(found_opp.company_id).to eq @new_company.company_id
+    expect(found_opp.contact_id).to eq @new_contact.id
+  end
+
+  it 'can change and resave a found opportunity' do
+    new_opp = full_op
+    found_opp = Connectwise::Opportunity.find(conn, new_opp.id)
+    found_opp.primary_sales_rep = 'Admin2'
+    expect {found_opp.save}.not_to raise_error
   end
 
   it 'fails to find an opportunity' do
